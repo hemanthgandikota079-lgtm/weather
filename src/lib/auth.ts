@@ -1,5 +1,7 @@
-import { auth, db, logOut, saveUserHistory, signInWithEmailPassword, signInWithGoogle, signUpWithEmail, fetchUserHistory } from './firebase';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+// Firebase has been removed from the project. This module provides lightweight stubs
+// that preserve the original exported function signatures so UI code that imports
+// auth functions continues to work without runtime errors. Each function logs a
+// clear warning and returns safe defaults where appropriate.
 
 export interface AuthUser {
   id: string;
@@ -7,53 +9,50 @@ export interface AuthUser {
   email: string;
 }
 
+function warn() {
+  console.warn(
+    'Firebase integration has been removed. Auth-related functions are now no-ops or return safe defaults. If you need authentication, re-add Firebase and implement these functions.'
+  );
+}
+
 export async function registerUser(name: string, email: string, password: string): Promise<{ user: AuthUser }> {
-  const firebaseUser = await signUpWithEmail(email, password, name);
-  return { user: { id: firebaseUser.uid, name: firebaseUser.displayName || name, email: firebaseUser.email || email } };
+  warn();
+  // Simulate a created user with a generated id. Do NOT use for real auth.
+  return { user: { id: 'stub-user', name: name || 'Weather User', email } };
 }
 
 export async function loginUser(email: string, password: string): Promise<{ user: AuthUser }> {
-  const firebaseUser = await signInWithEmailPassword(email, password);
-  return { user: { id: firebaseUser.uid, name: firebaseUser.displayName || 'Weather User', email: firebaseUser.email || email } };
+  warn();
+  // Return a stub user. UI should treat this as unauthenticated for secure actions.
+  return { user: { id: 'stub-user', name: 'Weather User', email } };
 }
 
 export async function loginWithGoogle(): Promise<{ user: AuthUser }> {
-  const firebaseUser = await signInWithGoogle();
-  return { user: { id: firebaseUser.uid, name: firebaseUser.displayName || 'Weather User', email: firebaseUser.email || '' } };
+  warn();
+  return { user: { id: 'stub-user', name: 'Weather User', email: '' } };
 }
 
 export async function fetchMe(): Promise<{ user: AuthUser }> {
-  const currentUser = auth?.currentUser;
-  if (!currentUser) {
-    throw new Error('No authenticated user');
-  }
-  return { user: { id: currentUser.uid, name: currentUser.displayName || 'Weather User', email: currentUser.email || '' } };
+  warn();
+  throw new Error('Authentication is not available in this build.');
 }
 
 export async function saveHistory(location: string): Promise<void> {
-  const currentUser = auth?.currentUser;
-  if (!currentUser) {
-    throw new Error('No authenticated user');
-  }
-  await saveUserHistory(currentUser.uid, location);
+  warn();
+  // No-op
 }
 
 export async function fetchHistory(uid: string): Promise<{ history: string[] }> {
-  const history = await fetchUserHistory(uid);
-  return { history: history.map((item) => item.location) };
+  warn();
+  return { history: [] };
 }
 
 export async function logoutUser(): Promise<void> {
-  await logOut();
+  warn();
+  // No-op
 }
 
 export async function fetchUserProfile(uid: string): Promise<AuthUser | null> {
-  if (!db) {
-    throw new Error('Firebase Firestore is not configured');
-  }
-  const q = query(collection(db, 'users'), where('uid', '==', uid));
-  const snapshot = await getDocs(q);
-  if (snapshot.empty) return null;
-  const profile = snapshot.docs[0].data();
-  return { id: profile.uid as string, name: (profile.name as string) || 'Weather User', email: (profile.email as string) || '' };
+  warn();
+  return null;
 }
