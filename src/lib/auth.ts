@@ -1,7 +1,7 @@
-// Firebase has been removed from the project. This module provides lightweight stubs
-// that preserve the original exported function signatures so UI code that imports
-// auth functions continues to work without runtime errors. Each function logs a
-// clear warning and returns safe defaults where appropriate.
+
+// Firebase has been removed from the project.
+// This module provides lightweight stubs that preserve the original
+// exported function signatures so UI code can continue to work.
 
 export interface AuthUser {
   id: string;
@@ -15,44 +15,78 @@ function warn() {
   );
 }
 
-export async function registerUser(name: string, email: string, password: string): Promise<{ user: AuthUser }> {
+export async function registerUser(
+  name: string,
+  email: string,
+  _password: string
+): Promise<{ user: AuthUser }> {
   warn();
-  // Simulate a created user with a generated id. Do NOT use for real auth.
-  return { user: { id: 'stub-user', name: name || 'Weather User', email } };
+
+  return {
+    user: {
+      id: 'stub-user',
+      name: name || 'Weather User',
+      email,
+    },
+  };
 }
 
-export async function loginUser(email: string, password: string): Promise<{ user: AuthUser }> {
+export async function loginUser(
+  email: string,
+  _password: string
+): Promise<{ user: AuthUser }> {
   warn();
-  // Return a stub user. UI should treat this as unauthenticated for secure actions.
-  return { user: { id: 'stub-user', name: 'Weather User', email } };
+
+  return {
+    user: {
+      id: 'stub-user',
+      name: 'Weather User',
+      email,
+    },
+  };
 }
 
 export async function loginWithGoogle(): Promise<{ user: AuthUser }> {
   warn();
-  return { user: { id: 'stub-user', name: 'Weather User', email: '' } };
+
+  return {
+    user: {
+      id: 'stub-user',
+      name: 'Weather User',
+      email: '',
+    },
+  };
 }
 
 export async function fetchMe(): Promise<{ user: AuthUser }> {
   warn();
+
   throw new Error('Authentication is not available in this build.');
 }
 
-export async function saveHistory(location: string): Promise<void> {
+export async function saveHistory(_location: string): Promise<void> {
   warn();
-  // No-op
 }
 
-export async function fetchHistory(uid: string): Promise<{ history: string[] }> {
+export async function fetchHistory(
+  _uid: string
+): Promise<{ history: string[] }> {
   warn();
-  return { history: [] };
+
+  return {
+    history: [],
+  };
 }
 
 export async function logoutUser(): Promise<void> {
   warn();
-  // No-op
 }
 
-export async function fetchUserProfile(uid: string): Promise<AuthUser | null> {
+export async function fetchUserProfile(
+  _uid: string
+): Promise<AuthUser | null> {
   warn();
+
   return null;
 }
+
