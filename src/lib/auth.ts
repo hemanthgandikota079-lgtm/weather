@@ -1,4 +1,3 @@
-
 // Firebase has been removed from the project.
 // This module provides lightweight stubs that preserve the original
 // exported function signatures so UI code can continue to work.
@@ -21,6 +20,8 @@ export async function registerUser(
   _password: string
 ): Promise<{ user: AuthUser }> {
   warn();
+  // mark unused parameter as referenced to satisfy TypeScript's no-unused-parameter checks
+  void _password;
 
   return {
     user: {
@@ -36,6 +37,7 @@ export async function loginUser(
   _password: string
 ): Promise<{ user: AuthUser }> {
   warn();
+  void _password;
 
   return {
     user: {
@@ -66,12 +68,14 @@ export async function fetchMe(): Promise<{ user: AuthUser }> {
 
 export async function saveHistory(_location: string): Promise<void> {
   warn();
+  void _location;
 }
 
 export async function fetchHistory(
   _uid: string
 ): Promise<{ history: string[] }> {
   warn();
+  void _uid;
 
   return {
     history: [],
@@ -86,7 +90,7 @@ export async function fetchUserProfile(
   _uid: string
 ): Promise<AuthUser | null> {
   warn();
+  void _uid;
 
   return null;
 }
-
