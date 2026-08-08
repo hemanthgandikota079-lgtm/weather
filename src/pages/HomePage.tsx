@@ -202,7 +202,7 @@ export function HomePage({
               Premium weather intelligence
             </div>
             <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              Aurora Weather<span className="ml-2 text-cyan-300">OS</span>
+              Skypulse weather<span className="ml-2 text-cyan-300">OS</span>
             </h1>
             <p className="mt-2 max-w-2xl text-sm text-slate-400 sm:text-base">
               Beautiful forecasts, travel guidance, air quality intelligence, and elegant weather insights for the modern world.
@@ -232,7 +232,7 @@ export function HomePage({
           <div className="rounded-[1.7rem] border border-white/10 bg-gradient-to-br from-white/10 via-white/5 to-transparent p-5 sm:p-7">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <p className="text-sm uppercase tracking-[0.28em] text-slate-400">Live search</p>
+                <p className="text-sm uppercase tracking-[0.28em] text-slate-400">Live report</p>
                 <h2 className="mt-2 text-2xl font-semibold text-white">Plan your next moment with clarity.</h2>
               </div>
               <div className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-sm text-cyan-200">AI-assisted weather</div>
@@ -320,7 +320,7 @@ export function HomePage({
               <p className="text-sm uppercase tracking-[0.28em] text-slate-400">AI assistant</p>
               <h3 className="mt-2 text-xl font-semibold text-white">Your weather copilot is ready.</h3>
             </div>
-            <div className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-sm text-cyan-200">Visible on entry</div>
+          
           </div>
           <div className="mt-5 rounded-[1.35rem] border border-white/10 bg-slate-950/60 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-xl">
             <div className="mb-3 flex items-center gap-2 text-sm text-cyan-300">

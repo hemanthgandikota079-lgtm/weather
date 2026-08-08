@@ -68,7 +68,7 @@ export function LoginPage() {
         </Link>
         <div className="mb-6 text-center">
           <p className="text-sm uppercase tracking-[0.28em] text-slate-400">Secure access</p>
-          <h1 className="mt-2 text-3xl font-semibold text-white">Aurora Weather</h1>
+          <h1 className="mt-2 text-3xl font-semibold text-white">Skypulse weather</h1>
           <p className="mt-2 text-sm text-slate-400">Sign in to save your searches, history, and weather preferences.</p>
         </div>
 
