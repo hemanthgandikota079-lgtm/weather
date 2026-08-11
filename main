@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Search, Wind, Droplets, Gauge, Eye, Thermometer, MapPin, RefreshCw, ArrowUp } from "lucide-react";
 
 const API_KEY = "dda41e776c9c7326ccebf0cbcdfd7cdf";
