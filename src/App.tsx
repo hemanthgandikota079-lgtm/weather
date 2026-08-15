@@ -120,7 +120,7 @@ function AppRoutes() {
   return (
     <div className={`relative min-h-screen w-full overflow-hidden bg-gradient-to-br ${theme.bg} transition-all duration-1000`} style={{ fontFamily: "Outfit, sans-serif" }}>
       <div className="pointer-events-none absolute inset-0" style={{ background: `radial-gradient(ellipse 60% 50% at 50% 30%, ${theme.glow}, transparent)`, transition: "background 1s ease" }} />
-      <div className="pointer-events-none absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
+      <div className="pointer-events-none absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)", backgroundSize: "80px 80px" }} />
       <div className="relative z-10 flex min-h-screen flex-col items-center px-3 py-4 sm:px-6 sm:py-8">
         {!user ? (
           <div className="mb-4 flex w-full max-w-6xl justify-end">
