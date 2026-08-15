@@ -1,16 +1,5 @@
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  Filler,
-  LinearScale,
-  LineElement,
-  PointElement,
-  Tooltip,
-} from "chart.js";
-import { Line } from "react-chartjs-2";
+import { type ReactNode } from "react";
 import type { ForecastEntry } from "../types";
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip);
 
 interface ForecastChartProps {
   title: string;
@@ -19,41 +8,40 @@ interface ForecastChartProps {
 }
 
 export function ForecastChart({ title, series, accent }: ForecastChartProps) {
-  const labels = series.map((item) => item.label);
-  const values = series.map((item) => item.temp);
+  const maxTemp = Math.max(...series.map(s => s.temp));
+  const minTemp = Math.min(...series.map(s => s.temp));
+  const tempRange = maxTemp - minTemp || 1;
 
   return (
     <div className="rounded-[1.3rem] border border-white/10 bg-slate-900/70 p-4">
-      <div className="mb-3 flex items-center justify-between">
-        <h4 className="text-sm font-semibold text-white">{title}</h4>
-        <span className="text-xs uppercase tracking-[0.25em] text-slate-500">24h outlook</span>
+      <h4 className="mb-4 text-sm font-semibold text-white">{title}</h4>
+      <div className="space-y-3">
+        {series.map((entry, idx) => {
+          const normalizedTemp = ((entry.temp - minTemp) / tempRange) * 100;
+          return (
+            <div key={idx} className="flex items-center gap-3">
+              <div className="w-12 text-xs text-slate-400 text-right">
+                <div>{entry.label}</div>
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <div className="h-6 w-full overflow-hidden rounded-full bg-slate-800/50">
+                    <div
+                      className="h-full rounded-full transition-all duration-300"
+                      style={{
+                        width: `${normalizedTemp}%`,
+                        backgroundColor: accent,
+                        opacity: 0.7,
+                      }}
+                    />
+                  </div>
+                  <span className="w-12 text-xs font-semibold text-white text-right">{entry.temp}°</span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
-      <Line
-        data={{
-          labels,
-          datasets: [
-            {
-              label: "Temperature",
-              data: values,
-              borderColor: accent,
-              backgroundColor: `${accent}22`,
-              borderWidth: 3,
-              pointRadius: 0,
-              tension: 0.35,
-              fill: true,
-            },
-          ],
-        }}
-        options={{
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            x: { ticks: { color: "rgba(255,255,255,0.45)" }, grid: { display: false } },
-            y: { ticks: { color: "rgba(255,255,255,0.45)" }, grid: { color: "rgba(255,255,255,0.08)" } },
-          },
-        }}
-      />
     </div>
   );
 }
