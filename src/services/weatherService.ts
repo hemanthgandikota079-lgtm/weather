@@ -64,10 +64,9 @@ function buildCurrentWeather(current: WeatherCurrentResponse, airQuality: AirQua
 }
 
 export async function fetchWeatherByCity(city: string): Promise<WeatherBundle> {
-  const [currentRes, forecastRes, airRes] = await Promise.all([
+  const [currentRes, forecastRes] = await Promise.all([
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${API_KEY}`),
     fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&units=metric&appid=${API_KEY}`),
-    fetch(`https://api.openweathermap.org/data/2.5/air_pollution?appid=${API_KEY}`),
   ]);
 
   if (!currentRes.ok || !forecastRes.ok) {
@@ -76,16 +75,23 @@ export async function fetchWeatherByCity(city: string): Promise<WeatherBundle> {
 
   const current: WeatherCurrentResponse = await currentRes.json();
   const forecast: WeatherForecastResponse = await forecastRes.json();
-  const air = airRes.ok ? ((await airRes.json()) as AirQualityResponse) : null;
-  const airQuality: AirQualityData | null = air
-    ? {
+  
+  let airQuality: AirQualityData | null = null;
+  try {
+    const airRes = await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${current.coord.lat}&lon=${current.coord.lon}&appid=${API_KEY}`);
+    if (airRes.ok) {
+      const air = (await airRes.json()) as AirQualityResponse;
+      airQuality = {
         aqi: air.list[0].main.aqi,
         pm2_5: Math.round(air.list[0].components.pm2_5 * 10) / 10,
         pm10: Math.round(air.list[0].components.pm10 * 10) / 10,
         no2: Math.round(air.list[0].components.no2 * 10) / 10,
         o3: Math.round(air.list[0].components.o3 * 10) / 10,
-      }
-    : null;
+      };
+    }
+  } catch {
+    // Air quality API call failed, continue without it
+  }
 
   const hourly = forecast.list.slice(0, 8).map((item, index) => toForecastEntry(item, index));
   const daily = forecast.list.slice(0, 7).map((item, index) => toDailyEntry(item, index));
@@ -99,10 +105,9 @@ export async function fetchWeatherByCity(city: string): Promise<WeatherBundle> {
 }
 
 export async function fetchWeatherByCoordinates(lat: number, lon: number, label: string): Promise<WeatherBundle> {
-  const [currentRes, forecastRes, airRes] = await Promise.all([
+  const [currentRes, forecastRes] = await Promise.all([
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`),
     fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`),
-    fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`),
   ]);
 
   if (!currentRes.ok || !forecastRes.ok) {
@@ -111,16 +116,23 @@ export async function fetchWeatherByCoordinates(lat: number, lon: number, label:
 
   const current: WeatherCurrentResponse = await currentRes.json();
   const forecast: WeatherForecastResponse = await forecastRes.json();
-  const air = airRes.ok ? ((await airRes.json()) as AirQualityResponse) : null;
-  const airQuality: AirQualityData | null = air
-    ? {
+  
+  let airQuality: AirQualityData | null = null;
+  try {
+    const airRes = await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`);
+    if (airRes.ok) {
+      const air = (await airRes.json()) as AirQualityResponse;
+      airQuality = {
         aqi: air.list[0].main.aqi,
         pm2_5: Math.round(air.list[0].components.pm2_5 * 10) / 10,
         pm10: Math.round(air.list[0].components.pm10 * 10) / 10,
         no2: Math.round(air.list[0].components.no2 * 10) / 10,
         o3: Math.round(air.list[0].components.o3 * 10) / 10,
-      }
-    : null;
+      };
+    }
+  } catch {
+    // Air quality API call failed, continue without it
+  }
 
   const hourly = forecast.list.slice(0, 8).map((item, index) => toForecastEntry(item, index));
   const daily = forecast.list.slice(0, 7).map((item, index) => toDailyEntry(item, index));
