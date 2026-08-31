@@ -1,6 +1,8 @@
 import type { AirQualityData, ForecastEntry, WeatherBundle, WeatherCurrent, WeatherForecastResponse, WeatherCurrentResponse, AirQualityResponse } from "../types";
 
-const API_KEY = "dda41e776c9c7326ccebf0cbcdfd7cdf";
+// API key should be accessed through backend proxy to avoid exposure
+// All weather API calls should go through /api endpoints
+const API_BASE_URL = "/api";
 
 function getConditionSummary(description: string): string {
   const lower = description.toLowerCase();
@@ -64,9 +66,14 @@ function buildCurrentWeather(current: WeatherCurrentResponse, airQuality: AirQua
 }
 
 export async function fetchWeatherByCity(city: string): Promise<WeatherBundle> {
+  // Validate city name to prevent injection attacks
+  if (!city || typeof city !== 'string' || city.trim().length === 0 || city.length > 100) {
+    throw new Error("Invalid city name provided.");
+  }
+  
   const [currentRes, forecastRes] = await Promise.all([
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${API_KEY}`),
-    fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&units=metric&appid=${API_KEY}`),
+    fetch(`${API_BASE_URL}/weather?city=${encodeURIComponent(city.trim())}`),
+    fetch(`${API_BASE_URL}/forecast?city=${encodeURIComponent(city.trim())}`),
   ]);
 
   if (!currentRes.ok || !forecastRes.ok) {
@@ -78,7 +85,7 @@ export async function fetchWeatherByCity(city: string): Promise<WeatherBundle> {
   
   let airQuality: AirQualityData | null = null;
   try {
-    const airRes = await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${current.coord.lat}&lon=${current.coord.lon}&appid=${API_KEY}`);
+    const airRes = await fetch(`${API_BASE_URL}/air-quality?lat=${current.coord.lat}&lon=${current.coord.lon}`);
     if (airRes.ok) {
       const air = (await airRes.json()) as AirQualityResponse;
       airQuality = {
@@ -89,8 +96,9 @@ export async function fetchWeatherByCity(city: string): Promise<WeatherBundle> {
         o3: Math.round(air.list[0].components.o3 * 10) / 10,
       };
     }
-  } catch {
+  } catch (error) {
     // Air quality API call failed, continue without it
+    console.error('Air quality fetch failed:', error instanceof Error ? error.message : 'Unknown error');
   }
 
   const hourly = forecast.list.slice(0, 8).map((item, index) => toForecastEntry(item, index));
@@ -105,9 +113,14 @@ export async function fetchWeatherByCity(city: string): Promise<WeatherBundle> {
 }
 
 export async function fetchWeatherByCoordinates(lat: number, lon: number, label: string): Promise<WeatherBundle> {
+  // Validate coordinates
+  if (typeof lat !== 'number' || typeof lon !== 'number' || lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+    throw new Error("Invalid coordinates provided.");
+  }
+  
   const [currentRes, forecastRes] = await Promise.all([
-    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`),
-    fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`),
+    fetch(`${API_BASE_URL}/weather?lat=${lat}&lon=${lon}`),
+    fetch(`${API_BASE_URL}/forecast?lat=${lat}&lon=${lon}`),
   ]);
 
   if (!currentRes.ok || !forecastRes.ok) {
@@ -119,7 +132,7 @@ export async function fetchWeatherByCoordinates(lat: number, lon: number, label:
   
   let airQuality: AirQualityData | null = null;
   try {
-    const airRes = await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`);
+    const airRes = await fetch(`${API_BASE_URL}/air-quality?lat=${lat}&lon=${lon}`);
     if (airRes.ok) {
       const air = (await airRes.json()) as AirQualityResponse;
       airQuality = {
@@ -130,8 +143,9 @@ export async function fetchWeatherByCoordinates(lat: number, lon: number, label:
         o3: Math.round(air.list[0].components.o3 * 10) / 10,
       };
     }
-  } catch {
+  } catch (error) {
     // Air quality API call failed, continue without it
+    console.error('Air quality fetch failed:', error instanceof Error ? error.message : 'Unknown error');
   }
 
   const hourly = forecast.list.slice(0, 8).map((item, index) => toForecastEntry(item, index));

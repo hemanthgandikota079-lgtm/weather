@@ -4,13 +4,11 @@ import {
   Bookmark,
   BookmarkPlus,
   CloudSun,
-  Compass,
   Droplets,
   Eye,
   Gauge,
   History,
   Home,
-  MapPin,
   MoonStar,
   Navigation,
   RefreshCw,
@@ -77,7 +75,6 @@ export function HomePage({
   onSaveLocation,
   isSaved,
 }: HomePageProps) {
-  const [activeInsight, setActiveInsight] = useState<"daily" | "travel" | "outdoor">("daily");
   const [assistantQuestion, setAssistantQuestion] = useState("What should I wear today?");
   const [assistantAnswer, setAssistantAnswer] = useState("Ask about rain, travel, clothing, or tomorrow and I'll tailor a response to your location.");
   const [assistantLoading, setAssistantLoading] = useState(false);
@@ -174,16 +171,6 @@ export function HomePage({
     const trimmed = assistantQuestion.trim();
     if (!trimmed || !weather) return;
     void askAssistant(trimmed);
-  }
-
-  function handleTravelGuidance() {
-    const prompt = "Can I travel today?";
-    setActiveInsight("travel");
-    setAssistantQuestion(prompt);
-    setAssistantAnswer("Preparing a travel-ready outlook for your destination...");
-    setAssistantLoading(true);
-    // use AI backend if available, otherwise local helper
-    void askAssistant(prompt);
   }
 
   const insightCards = useMemo(() => {
