@@ -41,7 +41,8 @@ function AppRoutes() {
       const bundle = await fetchWeatherByCity(cityName);
       setWeather(bundle);
       const condition = bundle.current.description;
-      setTheme(weatherThemes[condition.includes("rain") ? "Rain" : condition.includes("cloud") ? "Clouds" : condition.includes("snow") ? "Snow" : condition.includes("storm") ? "Thunderstorm" : condition.includes("clear") ? "Clear" : "Mist"] || defaultTheme);
+      const selectedTheme = weatherThemes[condition.includes("rain") ? "Rain" : condition.includes("cloud") ? "Clouds" : condition.includes("snow") ? "Snow" : condition.includes("storm") ? "Thunderstorm" : condition.includes("clear") ? "Clear" : "Mist"];
+      setTheme(selectedTheme || defaultTheme);
       setHistory((prev) => [bundle.current.city, ...prev.filter((item) => item !== bundle.current.city)].slice(0, 8));
       setCity(bundle.current.city);
       if (localStorage.getItem('aurora-token')) {
