@@ -124,12 +124,13 @@ export async function fetchUserProfile(
  */
 export async function sendOTP(email: string, type: 'login' | 'register' | 'verification' = 'login'): Promise<OTPResponse> {
   try {
-    const response = await fetch('/api/auth/send-otp', {
+    const endpoint = type === 'register' ? '/api/auth/register-otp' : type === 'verification' ? '/api/auth/send-verification-email' : '/api/auth/login-otp';
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, type }),
+      body: JSON.stringify({ email }),
     });
 
     const data = await response.json();

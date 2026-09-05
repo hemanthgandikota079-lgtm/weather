@@ -84,7 +84,7 @@ app.get('/api/forecast', async (req, res) => {
 
     const weather = await fetchWeather(latNum, lonNum);
 
-    const prompt = `You are a helpful weather assistant. Summarize the next 24 hours for the location using this data. Provide a 2-3 sentence plain-language summary and a single recommendation (umbrella, jacket, sunscreen). Data: ${JSON.stringify({ current: weather.current, hourly: weather.hourly.slice(0, 24) })}`;
+    const prompt = `You are a helpful weather assistant. Summarize the next 24 hours for the location using this data. Provide a 2-3 sentence plain-language summary and a single recommendation (umbrella, layers, etc.). Data: ${JSON.stringify(weather)}`;
 
     const ai = await llmChat([{ role: 'user', content: prompt }]);
     const summary = ai?.content || '';
@@ -122,7 +122,7 @@ app.post('/api/qa', async (req, res) => {
       minutely: weather.minutely || []
     };
 
-    const prompt = `You are a helpful weather assistant. Use the following weather data as context and answer the user's question concisely. Data: ${JSON.stringify(context)}\nQuestion: ${question.trim()}`;
+    const prompt = `You are a helpful weather assistant. Use the following weather data as context and answer the user's question concisely. Data: ${JSON.stringify(context)}\nQuestion: ${question}`;
 
     const ai = await llmChat([{ role: 'user', content: prompt }]);
     res.json({ answer: ai?.content || 'No answer' });
